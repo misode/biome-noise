@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi Noise Visualizer</title>
+  <script src="./perlin.js"></script>
+  <style>
+    #content {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #biomeConfig {
+      width: 300px;
+      margin-right: 20px;
+    }
+
+    .biomeEntry {
+      padding: 4px 4px;
+      margin: 10px 0;
+      border: 3px solid;
+    }
+
+    .biomeEntry select {
+      margin-bottom: 5px;
+    }
+
+    .biomeEntry input,
+    .biomeEntry select {
+      width: 100%;
+    }
+
+    #biomeOutput,
+    #biomeRaw {
+      width: 300px;
+    }
+
+    #biomePreview {
+      background-color: #000;
+      margin-bottom: 10px;
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <div id="biomeConfig">
+      <button id="addBiome">Add Biome</button>
+      <button id="newSeed">Reseed</button>
+      <div id="biomeList"></div>
+    </div>
+    <div id="biomeOutput">
+      <canvas id="biomePreview"></canvas>
+      <textarea readonly id="biomeRaw" rows="10"></textarea>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
