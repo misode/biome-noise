@@ -17,6 +17,7 @@ seedEl.addEventListener('click', () => {
 })
 
 const addBiome = document.getElementById('addBiome')
+const biomeList = document.getElementById('biomeList')
 
 addBiome.addEventListener('click', () => {
   const randomBiome = Math.floor(Math.random() * biomes.length)
@@ -26,23 +27,36 @@ addBiome.addEventListener('click', () => {
     parameters: { altitude: 0, temperature: 0, humidity: 0, weirdness: 0, offset: 0 }
   }
   model.push(biome)
-  const index = model.length - 1
 
   const biomeDiv = document.createElement('div')
   biomeDiv.className = 'biomeEntry'
   biomeDiv.style.borderColor = `rgb(${biome.color[0]}, ${biome.color[1]}, ${biome.color[2]})`
 
+  const headerDiv = document.createElement('div')
   const biomeName = document.createElement('select')
+  const removeBiome = document.createElement('button')
+  removeBiome.textContent = 'X'
+  removeBiome.addEventListener('click', () => {
+    const index = [].indexOf.call(biomeList.children, biomeDiv);
+    biomeList.removeChild(biomeDiv)
+    model.splice(index, 1)
+    update()
+  })
+
   biomes.forEach(b => biomeName.insertAdjacentHTML('beforeend', `<option>${b}</option>`))
-  biomeName.value = model[index].biome
+  biomeName.value = model[model.length - 1].biome
   biomeName.addEventListener('change', () => {
+    const index = [].indexOf.call(biomeList.children, biomeDiv);
     model[index].biome = biomeName.value
     const col = biomeColors[biomes.indexOf(biomeName.value)]
     model[index].color = col
     biomeDiv.style.borderColor = `rgb(${col[0]}, ${col[1]}, ${col[2]})`
     update()
   })
-  biomeDiv.appendChild(biomeName)
+
+  headerDiv.appendChild(biomeName)
+  headerDiv.appendChild(removeBiome)
+  biomeDiv.appendChild(headerDiv)
 
   sliders.forEach(s => {
     const el = document.createElement('div')
@@ -53,11 +67,13 @@ addBiome.addEventListener('click', () => {
     Object.keys(sliderAttrs).forEach(a => sliderEl.setAttribute(a, sliderAttrs[a]))
     Object.keys(inputAttrs).forEach(a => inputEl.setAttribute(a, inputAttrs[a]))
     sliderEl.addEventListener('change', () => {
+      const index = [].indexOf.call(biomeList.children, biomeDiv);
       model[index].parameters[s] = parseFloat(sliderEl.value)
       inputEl.value = sliderEl.value
       update()
     })
     inputEl.addEventListener('change', () => {
+      const index = [].indexOf.call(biomeList.children, biomeDiv);
       model[index].parameters[s] = parseFloat(inputEl.value)
       inputEl.value = inputEl.value || 0
       sliderEl.value = inputEl.value
@@ -67,25 +83,27 @@ addBiome.addEventListener('click', () => {
     el.appendChild(inputEl)
     biomeDiv.appendChild(el)
   })
-  document.getElementById('biomeList').appendChild(biomeDiv)
+  biomeList.appendChild(biomeDiv)
   update()
 })
 addBiome.click()
 
 function update() {
-  let img = ctx.createImageData(size, size)
-  let data = img.data
-  for (let x = 0; x < size; x += 1) {
-    for (let y = 0; y < size; y += 1) {
-      const i = (y * (img.width * 4)) + (x * 4)
-      const b = closestBiome(x/noiseSize, y/noiseSize)
-      data[i] = b.color[0]
-      data[i + 1] = b.color[1]
-      data[i + 2] = b.color[2]
-      data[i + 3] = 255
+  if (model.length > 0) {
+    let img = ctx.createImageData(size, size)
+    let data = img.data
+    for (let x = 0; x < size; x += 1) {
+      for (let y = 0; y < size; y += 1) {
+        const i = (y * (img.width * 4)) + (x * 4)
+        const b = closestBiome(x/noiseSize, y/noiseSize)
+        data[i] = b.color[0]
+        data[i + 1] = b.color[1]
+        data[i + 2] = b.color[2]
+        data[i + 3] = 255
+      }
     }
+    ctx.putImageData(img, 0, 0)  
   }
-  ctx.putImageData(img, 0, 0)
   
   const modelOutput = model.map(b => ({
     biome: `minecraft:${b.biome}`,
