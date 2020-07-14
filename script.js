@@ -16,6 +16,13 @@ seedEl.addEventListener('click', () => {
   update()
 })
 
+const biomeRaw = document.getElementById('biomeRaw')
+
+biomeRaw.addEventListener('focus', (evt) => {
+  biomeRaw.select()
+  document.execCommand('copy');
+})
+
 const addBiome = document.getElementById('addBiome')
 const biomeList = document.getElementById('biomeList')
 
