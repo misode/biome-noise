@@ -16,7 +16,9 @@ seedEl.addEventListener('click', () => {
   update()
 })
 
-document.getElementById('addBiome').addEventListener('click', () => {
+const addBiome = document.getElementById('addBiome')
+
+addBiome.addEventListener('click', () => {
   const randomBiome = Math.floor(Math.random() * biomes.length)
   const biome = {
     biome: biomes[randomBiome],
@@ -43,18 +45,32 @@ document.getElementById('addBiome').addEventListener('click', () => {
   biomeDiv.appendChild(biomeName)
 
   sliders.forEach(s => {
-    const el = document.createElement('input')
-    const attrs = { type: 'range', min: '-1', max: '1', value: '0', step: '0.01' }
-    Object.keys(attrs).forEach(a => el.setAttribute(a, attrs[a]))
-    el.addEventListener('change', () => {
-      model[index].parameters[s] = parseFloat(el.value)
+    const el = document.createElement('div')
+    const sliderEl = document.createElement('input')
+    const inputEl = document.createElement('input')
+    const sliderAttrs = { type: 'range', min: '-1', max: '1', value: '0', step: '0.01' }
+    const inputAttrs = { type: 'number', min: '-1', max: '1', value: '0', step: '0.01' }
+    Object.keys(sliderAttrs).forEach(a => sliderEl.setAttribute(a, sliderAttrs[a]))
+    Object.keys(inputAttrs).forEach(a => inputEl.setAttribute(a, inputAttrs[a]))
+    sliderEl.addEventListener('change', () => {
+      model[index].parameters[s] = parseFloat(sliderEl.value)
+      inputEl.value = sliderEl.value
       update()
     })
+    inputEl.addEventListener('change', () => {
+      model[index].parameters[s] = parseFloat(inputEl.value)
+      inputEl.value = inputEl.value || 0
+      sliderEl.value = inputEl.value
+      update()
+    })
+    el.appendChild(sliderEl)
+    el.appendChild(inputEl)
     biomeDiv.appendChild(el)
   })
   document.getElementById('biomeList').appendChild(biomeDiv)
   update()
 })
+addBiome.click()
 
 function update() {
   let img = ctx.createImageData(size, size)

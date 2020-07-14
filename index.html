@@ -8,7 +8,6 @@
   <style>
     #content {
       display: flex;
-      justify-content: center;
       padding: 20px;
     }
 
@@ -23,25 +22,32 @@
       border: 3px solid;
     }
 
-    .biomeEntry select {
-      margin-bottom: 5px;
+    .biomeEntry div {
+      display: flex;
+      margin-top: 5px;
     }
 
-    .biomeEntry input,
+    .biomeEntry input[type=range],
     .biomeEntry select {
       width: 100%;
     }
 
-    #biomeOutput,
-    #biomeRaw {
-      width: 300px;
+    .biomeEntry input[type=number] {
+      width: 50px;
     }
 
     #biomePreview {
+      position: fixed;
       background-color: #000;
       margin-bottom: 10px;
       width: 300px;
       height: 300px;
+    }
+
+    #biomeRaw {
+      position: fixed;
+      top: 340px;
+      width: 300px;
     }
   </style>
 </head>
